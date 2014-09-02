@@ -186,6 +186,11 @@ var filters = {
         return arr[Math.floor(Math.random() * arr.length)];
     },
 
+    reject: function(arr, test){
+        var modifier = function(x){return !x;}
+        return reject_or_select(arr, test, modifier);
+    },
+
     replace: function(str, old, new_, maxCount) {
         var res = str;
         var last = res;
@@ -240,6 +245,10 @@ var filters = {
 
         return rounder(val * factor) / factor;
     },
+    select: function(arr, test){
+            var modifier = function(x){return x;}
+            return reject_or_select(arr, test, modifier);
+        },
 
     slice: function(arr, slices, fillWith) {
         var sliceLength = Math.floor(arr.length / slices);
@@ -429,4 +438,31 @@ var filters = {
 filters.d = filters['default'];
 filters.e = filters.escape;
 
+var tests = {
+    odd : function(x){ return (x % 2); },
+    even : function(x){ return !(x % 2); }
+}
+
+var reject_or_select = function(arr, test, modifier) {
+    var outItems = [];
+    if(test) {
+        if(test in tests) {
+            test = tests[test];
+        }
+    }
+
+    if(!test) {
+        test = function (x) {
+            return !!x
+        };
+    }
+
+    for(var i = 0; i < arr.length; i++) {
+        var item = arr[i];
+        if(modifier(test(item))) {
+            outItems.push(item);
+        }
+    }
+    return outItems;
+}
 module.exports = filters;

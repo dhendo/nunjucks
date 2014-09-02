@@ -217,6 +217,48 @@
             finish(done);
         });
 
+        it('reject', function(done) {
+
+            var tmpl = '{% for item in arr | reject("odd") %}' +
+                       '{{ item }}' +
+                       '{% endfor %}';
+            equal(tmpl,
+                   { arr: [1,2,3,4,5,6] },
+                   '246');
+
+            tmpl = '{% for item in arr | reject("even") %}' +
+                       '{{ item }}' +
+                       '{% endfor %}';
+            equal(tmpl,
+                   { arr: [1,2,3,4,5,6] },
+                   '135');
+
+            tmpl = '{% for item in arr | reject %}' +
+                       '{{ item }}' +
+                       '{% endfor %}';
+            equal(tmpl,
+                   { arr: [null, undefined,0,1,"a"] },
+                   '0');
+
+
+            finish(done);
+        });
+
+        it('rejectattr', function(done) {
+
+            var tmpl = '{% for item in arr | rejectattr("a") %}' +
+                       '{{ item }}' +
+                       '{% endfor %}';
+            equal(tmpl,
+                   { arr: [{a: true, val: "y"}, {a: true, val: "y"}] },
+                   'bcd');
+            equal(tmpl,
+                   { arr: ["a"] },
+                   '');
+
+            finish(done);
+        });
+
         it('reverse', function(done) {
             equal('{{ "abcdef" | reverse }}', 'fedcba');
             equal('{% for i in [1, 2, 3, 4] | reverse %}{{ i }}{% endfor %}', '4321');
@@ -230,6 +272,33 @@
             equal('{{ 4.12344 | round(4) }}', ('4.1234'));
             finish(done);
         });
+
+        it('select', function(done) {
+
+                   var tmpl = '{% for item in arr | select("odd") %}' +
+                              '{{ item }}' +
+                              '{% endfor %}';
+                   equal(tmpl,
+                          { arr: [1,2,3,4,5,6] },
+                          '135');
+
+                   tmpl = '{% for item in arr | select("even") %}' +
+                              '{{ item }}' +
+                              '{% endfor %}';
+                   equal(tmpl,
+                          { arr: [1,2,3,4,5,6] },
+                          '246');
+
+                   tmpl = '{% for item in arr | select %}' +
+                              '{{ item }}' +
+                              '{% endfor %}';
+                   equal(tmpl,
+                          { arr: [null, undefined,0,1,"a", true] },
+                          '1atrue');
+
+
+                   finish(done);
+               });
 
         it('slice', function(done) {
             var tmpl = '{% for items in arr | slice(3) %}' +
