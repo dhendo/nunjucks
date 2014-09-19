@@ -250,6 +250,33 @@ var filters = {
             return reject_or_select(arr, test, modifier);
         },
 
+    selectbyattr: function (arr, attr, value) {
+        for (i = 0; i < arr.length; i++){
+            try {
+                to_dots = attr.replace(/\[(\w+)\]/g, '.$1');
+                element = arr[i];
+                path = to_dots.split('.');
+
+                for (j=0; j<path.length; j++) {
+                    element = element[path[j]];
+                }
+
+                if (isNaN(value) == false) {
+                    element = Number(element);
+                }
+                if (element !== value) {
+                    arr.splice(i, 1);
+                    i--;
+                };
+            }
+            catch(e){
+                arr.splice(i, 1);
+                i--;
+            };
+        };
+        return arr;
+    },
+
     slice: function(arr, slices, fillWith) {
         var sliceLength = Math.floor(arr.length / slices);
         var extra = arr.length % slices;
