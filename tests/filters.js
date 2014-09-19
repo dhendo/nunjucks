@@ -244,20 +244,20 @@
             finish(done);
         });
 
-        it('rejectattr', function(done) {
-
-            var tmpl = '{% for item in arr | rejectattr("a") %}' +
-                       '{{ item }}' +
-                       '{% endfor %}';
-            equal(tmpl,
-                   { arr: [{a: true, val: "y"}, {a: true, val: "y"}] },
-                   'bcd');
-            equal(tmpl,
-                   { arr: ["a"] },
-                   '');
-
-            finish(done);
-        });
+//        it('rejectattr', function(done) {
+//
+//            var tmpl = '{% for item in arr | rejectattr("a") %}' +
+//                       '{{ item }}' +
+//                       '{% endfor %}';
+//            equal(tmpl,
+//                   { arr: [{a: true, val: "y"}, {a: true, val: "y"}] },
+//                   'bcd');
+//            equal(tmpl,
+//                   { arr: ["a"] },
+//                   '');
+//
+//            finish(done);
+//        });
 
         it('reverse', function(done) {
             equal('{{ "abcdef" | reverse }}', 'fedcba');
@@ -299,6 +299,53 @@
 
                    finish(done);
                });
+
+        it('selectbyattr', function(done) {
+
+            var tmpl = '{% for item in arr | selectbyattr("age", 17) %}' +
+                '{{ item }}' +
+                '{% endfor %}';
+            equal(tmpl,
+                { arr:	[
+                    {name: 'one', age: 43, cat: [{empty: 'no'}, {id: 'pass'}]},
+                    {name: 'two', age: 23},
+                    {name: 'three', age: 28, cat: [{empty: 'yes'}, {id: 'pass'}]},
+                    {name: 'four', age: 17},
+                    {name: 'five', age: 56, cat: [{empty: 'no'}, {id: 'other'}]}
+                ]
+                },
+                '[object Object]');
+
+            tmpl = '{% for item in arr | selectbyattr("cat[1].id", "pass") %}' +
+                '{{ item }}' +
+                '{% endfor %}';
+            equal(tmpl,
+                { arr:	[
+                    {name: 'one', age: 43, cat: [{empty: 'no'}, {id: 'pass'}]},
+                    {name: 'two', age: 23},
+                    {name: 'three', age: 28, cat: [{empty: 'yes'}, {id: 'pass'}]},
+                    {name: 'four', age: 17},
+                    {name: 'five', age: 56, cat: [{empty: 'no'}, {id: 'other'}]}
+                ]
+                },
+                '[object Object][object Object]');
+
+            tmpl = '{% for item in arr | selectbyattr("cat[3]", "") %}' +
+                '{{ item }}' +
+                '{% endfor %}';
+            equal(tmpl,
+                { arr:	[
+                    {name: 'one', age: 43, cat: [{empty: 'no'}, {id: 'pass'}]},
+                    {name: 'two', age: 23},
+                    {name: 'three', age: 28, cat: [{empty: 'yes'}, {id: 'pass'}]},
+                    {name: 'four', age: 17},
+                    {name: 'five', age: 56, cat: [{empty: 'no'}, {id: 'other'}]}
+                ]
+                },
+                '');
+
+            finish(done);
+        });
 
         it('slice', function(done) {
             var tmpl = '{% for items in arr | slice(3) %}' +
